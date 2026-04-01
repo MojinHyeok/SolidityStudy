@@ -1,0 +1,10 @@
+{
+  "test/Counter.sol": {
+    "__sources__": {
+      "test/Counter.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.18;\r\n\r\ncontract Counter {\r\n    uint256 public count;\r\n\r\n    function increment() public {\r\n        count += 1;\r\n    }\r\n\r\n    function decrement() public {\r\n        require(count > 0, \"count is already zero\");\r\n        count -= 1;\r\n    }\r\n\r\n    function getCount() public view returns (uint256) {\r\n        return count;\r\n    }\r\n}",
+        "file": "test/Counter.sol"
+      }
+    }
+  }
+}
