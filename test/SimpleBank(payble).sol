@@ -6,17 +6,28 @@ contract SimpleBank {
     // 사용자별 잔액 저장 (address => 금액)
     mapping(address => uint256) public balances;
 
+    event Received(address indexed user, uint256 amount);
+
+//     {
+//       to: 컨트랙트 주소,
+//      data: 함수 호출 데이터,
+//      value: ETH 금액,   ← ⭐ 이게 핵심
+//      from: 보내는 사람
+//  } 블록체인 트랜잭션의 이미 정해진 구조. 
+
     // ========================
     // 입금 함수
     // ========================
-    function deposit() public payable {
+    function _deposit() internal {
         // msg.value = 이 함수 호출 시 같이 보낸 ETH 금액
         // payable이 있어야 ETH를 받을 수 있음
-
         require(msg.value > 0, unicode"잔액이 부족합니다");
-
         // 사용자 잔액 증가
         balances[msg.sender] += msg.value;
+    }
+
+    function depoist() public payable {
+        _deposit();
     }
 
     // ========================
@@ -64,5 +75,19 @@ contract SimpleBank {
         // address(this) = 현재 컨트랙트 주소
         // balance = 이 컨트랙트가 가지고 있는 총 ETH
         return address(this).balance;
+    }
+    // ========================
+    // receive: ETH만 보내도 입금 처리
+    // ========================
+    receive() external payable {
+        emit Received(msg.sender, msg.value);
+        _deposit();
+    }
+
+    // ========================
+    // fallback: 잘못된 호출 방지
+    // ========================
+    fallback() external payable {
+        revert("Invalid function call");
     }
 }
